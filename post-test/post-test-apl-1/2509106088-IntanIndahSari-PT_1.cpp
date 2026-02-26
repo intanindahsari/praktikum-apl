@@ -3,6 +3,7 @@ using namespace std;
 
 
 int main(){
+    system("cls");
 
     int login_ulang = 0;
     float KiloMeter, CentiMeter, Meter, angka;
