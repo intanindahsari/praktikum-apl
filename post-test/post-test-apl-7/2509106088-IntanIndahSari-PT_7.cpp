@@ -1,5 +1,7 @@
 #include <iostream>
 #include <iomanip>
+#include <stdexcept>
+#include <limits>
 using namespace std;
 
 
@@ -57,7 +59,23 @@ bool Registrasi (string usernameregis, string &passwordregis, int &jumlahUser, L
 }
 void RegisterUser (string &usernameregis, string &passwordregis, int &jumlahUser, LoginUser user[], int &id_user){
     cout <<"Masukan USERNAME: "; getline (cin, usernameregis);
+    try {
+        if (usernameregis.empty()) {
+            throw invalid_argument("Username tidak boleh kosong. Silakan masukkan username yang valid.");
+        }
+    } catch (const invalid_argument& e) {
+        cout << e.what() << endl;
+        return; 
+    }
     cout <<"Masukan PASSWORD: "; getline (cin, passwordregis);
+    try {
+        if (passwordregis.empty()) {
+            throw invalid_argument("Password tidak boleh kosong. Silakan masukkan password yang valid.");
+        }
+    } catch (const invalid_argument& e) {
+        cout << e.what() << endl;
+        return;
+    }
     if (Registrasi(usernameregis, passwordregis, jumlahUser, user, id_user)){
         cout << "Registrasi Berhasil ✅\n";
     }
@@ -99,9 +117,25 @@ void Tambah_RankingMusik(int *n, RankingMusik musik[] ) {
     cout << "===============================================\n";
     cout << "Masukan Judul lagu: " << endl;
     getline (cin, musik[*n].judulLagu);
+    try {
+        if (musik[*n].judulLagu.empty()) {
+            throw invalid_argument("Judul lagu tidak boleh kosong. Silakan masukkan judul lagu yang valid.");
+        }
+    } catch (const invalid_argument& e) {
+        cout << e.what() << endl;
+        return; 
+    }
     cout << "----------------------------------------------\n";
     cout << "Masukan Genre lagu: " << endl;
     getline (cin, musik[*n].genre);
+    try {
+        if (musik[*n].genre.empty()) {
+            throw invalid_argument("Genre lagu tidak boleh kosong dan harus berupa huruf, Tidak boleh angka atau simbol");
+        }
+    } catch (const invalid_argument& e) {
+        cout << e.what() << endl;
+        return; 
+    }
     cout << "----------------------------------------------\n";
     cout << "Data berhasil ditambahkan✅\n";
     (*n)++;
@@ -112,12 +146,44 @@ void Update_RankingMusik(int *n, RankingMusik musik[], int updateposisi) {
     cout << "UPDATE RANKING MUSIK\n";
     cout << "===============================================\n";
     cout << "Masukan No lagu yang ingin di update: "; cin >> updateposisi;
+    try {
+        if(cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            throw invalid_argument("Input harus berupa angka!");
+        }
+        if(updateposisi < 1 || updateposisi > *n) {
+            throw out_of_range("Posisi lagu tidak valid. Silakan masukkan nomor lagu yang ada di ranking.");
+        }
+    } catch (const invalid_argument& e) {
+        cout << e.what() << endl;
+        return; 
+    } catch (const out_of_range& e) {
+        cout << e.what() << endl;
+        return;
+    }
     cout << "-----------------------------------------------\n";
     cin.ignore();
     if (updateposisi > 0 && updateposisi <= *n ){
         cout << "Masukan judul lagu yang ingin di update: "; getline (cin, musik[updateposisi - 1].judulLagu);
+            try {
+                if (musik[updateposisi - 1].judulLagu.empty()) {
+                    throw invalid_argument("Judul lagu tidak boleh kosong. Silakan masukkan judul lagu yang valid.");
+                }
+            } catch (const invalid_argument& e) {
+                cout << e.what() << endl;
+                return; 
+            }
         cout << "-----------------------------------------------\n";
         cout << "Masukan genre lagu yang ingin di update: "; getline (cin, musik[updateposisi - 1].genre);
+        try {
+            if (musik[updateposisi - 1].genre.empty()) {
+                throw invalid_argument("Genre lagu tidak boleh kosong dan harus berupa huruf, Tidak boleh angka atau simbol");
+            }
+        } catch (const invalid_argument& e) {
+            cout << e.what() << endl;
+            return; 
+        }
         cout << "-----------------------------------------------\n";
         cout << "Data berhasil diupdate✅\n";
     }
@@ -127,6 +193,22 @@ void Hapus_RankingMusik(int *n, RankingMusik musik[],  int hapusposisi) {
     cout << "HAPUS RANKING MUSIK\n";
     cout << "===============================================\n";
     cout << "Masukan No lagu yang ingin dihapus: "; cin >> hapusposisi;
+    try {
+        if(cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            throw invalid_argument("Input harus berupa angka!");
+        }
+        if(hapusposisi < 1 || hapusposisi > *n) {
+            throw out_of_range("Posisi lagu tidak valid. Silakan masukkan nomor lagu yang ada di ranking.");
+        }
+    } catch (const invalid_argument& e) {
+        cout << e.what() << endl;
+        return; 
+    } catch (const out_of_range& e) {
+        cout << e.what() << endl;
+        return;
+    }
     cout << "-----------------------------------------------\n";
     if (hapusposisi > 0 && hapusposisi <= *n ){
         for (int i = hapusposisi - 1; i < *n - 1; i++){
@@ -144,6 +226,23 @@ void Tambah_TOPSONG(int pilihanTopSong, int *Topsong, int *n, RankingMusik musik
         cout << "===============================================\n";
         cout << "Masukan nomor/posisi lagu yang ingin di tambahkan ke my top song"  << endl;
         cin >> pilihanTopSong;
+        try {
+            if (cin.fail()) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                throw invalid_argument("Input harus berupa angka!");
+            }
+            if (pilihanTopSong < 1 || pilihanTopSong > *n) {
+                throw out_of_range("Posisi lagu tidak valid. Harus berupa angka");
+            }
+        }catch (const invalid_argument& e) {
+            cout << e.what() << endl;
+            return;
+        }
+        catch (const out_of_range& e) {
+            cout << e.what() << endl;
+            return;
+        }
         cout << "---------------------------------------------------\n";
         if (pilihanTopSong > 0 && pilihanTopSong <= *n){
             topsong[*Topsong].judulLagu = musik[pilihanTopSong - 1].judulLagu;
@@ -172,6 +271,22 @@ void Hapus_TOPSONG(int pilihanTopSong, int *Topsong, int *n, RankingMusik musik[
     cout << "===============================================\n";
     cout << "Masukan nomor/posisi lagu yang ingin di hapus dari my top song"  << endl;
     cin >> pilihanTopSong;
+    try {
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            throw invalid_argument("Input harus berupa angka!");
+        }
+        if (pilihanTopSong < 1 || pilihanTopSong > *Topsong) {
+            throw out_of_range("Posisi lagu tidak valid. Harus berupa angka");
+        }
+    } catch (const invalid_argument& e) {
+        cout << e.what() << endl;
+        return;
+    } catch (const out_of_range& e) {
+        cout << e.what() << endl;
+        return;
+    }
     cout << "-----------------------------------------------\n";
     if (pilihanTopSong > 0 && pilihanTopSong <= *Topsong){
         for (int i = pilihanTopSong - 1; i < *Topsong - 1; i++){
@@ -321,9 +436,25 @@ void Kelola_PaketLangganan( PaketLangganan paket[12], int &n1, int updatePaket, 
             cout << "0. Keluar\n";
             cout << "Masukan pilihan: "; cin >> pilihPaket; 
             cin.ignore();
+            try {
+                if (pilihPaket < 0 || pilihPaket > 2) {
+                    throw invalid_argument("Pilihan tidak valid. Silakan masukkan angka antara 0 sampai 2.");
+                }
+            } catch (const invalid_argument& e) {
+                cout << e.what() << endl;
+                continue; 
+            }
             if (pilihPaket == 1){
                 int paketUpdate;
                 cout << "Masukan id paket yang ingin di update: "; getline (cin, cariID);
+                try {
+                    if (cariID.empty()) {
+                        throw invalid_argument("ID paket tidak boleh kosong dan harus dengan huruf besar, contoh: REG-1W\n");
+                    }
+                } catch (const invalid_argument& e) {
+                    cout << e.what() << endl;
+                    continue;
+                }
                     int indexPaket = -1;
                     for (int i = 0; i < n1; i++){
                         if (paket[i].id_paket == cariID){
@@ -343,6 +474,16 @@ void Kelola_PaketLangganan( PaketLangganan paket[12], int &n1, int updatePaket, 
                             cout << "Masukan pilihan: "; cin >> paketUpdate;
                             if (paketUpdate == 1){  
                                 cout << "Masukan stock paket baru: ";  cin >>Ptr->stockPaket;
+                                try {
+                                    if (cin.fail()) {
+                                        cin.clear();
+                                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                                        throw invalid_argument("Input harus berupa angka!");
+                                    }
+                                } catch (const invalid_argument& e) {
+                                    cout << e.what() << endl;
+                                    continue; 
+                                }
                                 cout << "Data berhasil diupdate✅\n";
                             }
                             else if (paketUpdate == 0){
@@ -421,6 +562,20 @@ void Belipaket (PaketLangganan paket[], int &n1){
     cout << "Cari paket berdasarkan harga\n";
     cout << "===============================================\n";
     cout << "Masukan harga paket yang ingin dicari: "; cin >> targetHarga;
+    try {
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            throw invalid_argument("Input harus berupa angka!");
+        }
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        
+        if (targetHarga < 0) throw invalid_argument("Harga tidak boleh negatif!");
+    } 
+    catch (const invalid_argument& e) {
+        cout << "Error: " << e.what() << endl;
+        return;
+    }
     binarySearchHarga(paket, n1, targetHarga);
     cout << "Tekan enter untuk melanjutkan pembelian paket                "; cin.ignore(); cin.get();
     cout << "Urutan harga paket dari Termurah ke Termahal\n";
@@ -521,6 +676,14 @@ int main(){
         cout <<"3. Keluar\n";
         cout <<"Masukan pilihan menu: \n"; cin >> pilihMenu;
         cin.ignore();
+        try {
+            if (pilihMenu < 1 || pilihMenu > 3) {
+                throw invalid_argument("Pilihan menu tidak valid. Silakan masukkan angka antara 1 sampai 3.");
+            }
+        } catch (const invalid_argument& e) {
+            cout << e.what() << endl;
+            continue; 
+        }
         if (pilihMenu == 1){
             int loginawal = 0;
             while (loginawal < 3){
@@ -542,6 +705,14 @@ int main(){
                         cout <<"6. Keluar\n";
                         cout <<"Masukan angka pilihanmu: \n"; cin >> pilih;
                         cin.ignore();
+                        try {
+                            if (pilih < 1 || pilih > 6) {
+                                throw invalid_argument("Pilihan menu tidak valid. Silakan masukkan angka antara 1 sampai 6.");
+                            }
+                        } catch (const invalid_argument& e) {
+                            cout << e.what() << endl;
+                            continue; 
+                        }
                         if (pilih == 1) {
                             Lihat_BlindRanking( n, musik);
                         }
@@ -587,6 +758,14 @@ int main(){
                         cout <<"7. Keluar\n";
                         cout <<"Masukan angka pilihanmu: \n"; cin >> pilihanTopSong;
                         cin.ignore();
+                        try {
+                            if (pilihanTopSong < 1 || pilihanTopSong > 7) {
+                                throw invalid_argument("Pilihan menu tidak valid. Silakan masukkan angka antara 1 sampai 7.");
+                            }
+                        } catch (const invalid_argument& e) {
+                            cout << e.what() << endl;
+                            continue;
+                        }
                         if (pilihanTopSong == 1) {
                             Lihat_BlindRanking(n, musik);
                         }
@@ -641,3 +820,4 @@ int main(){
         }
     }
     return 0;
+} 
